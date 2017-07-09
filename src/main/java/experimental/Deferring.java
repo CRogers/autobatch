@@ -1,7 +1,7 @@
-package blah;
+package experimental;
 
-import blah.Funcs.Func0;
-import blah.Funcs.Func2;
+import experimental.Funcs.Func0;
+import experimental.Funcs.Func2;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -25,7 +25,6 @@ public enum Deferring {
         <A, R> DeferredValue<R> combineMany(Iterable<DeferredValue<A>> values, Function<Iterable<A>, R> combiner);
 
         <A, B, R> DeferredFunc2<A, B, R> batch(Class<A> aClass, Class<B> bClass, Class<R> rClass, Batcher<Invocation2<A, B>, R> batcher);
-
         <R> DeferredFunc0<R> callThroughTo(Func0<R> func);
     }
 
@@ -126,6 +125,16 @@ public enum Deferring {
 
         @Override
         public <A, R> DeferredValue<R> combineMany(Iterable<DeferredValue<A>> deferredValues, Function<Iterable<A>, R> combiner) {
+            return null;
+        }
+
+        @Override
+        public <A, B, R> DeferredFunc2<A, B, R> batch(Class<A> aClass, Class<B> bClass, Class<R> rClass, Batcher<Invocation2<A, B>, R> batcher) {
+            return null;
+        }
+
+        @Override
+        public <R> DeferredFunc0<R> callThroughTo(Func0<R> func) {
             return null;
         }
     }

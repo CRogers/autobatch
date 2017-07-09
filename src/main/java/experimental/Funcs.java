@@ -1,4 +1,4 @@
-package blah;
+package experimental;
 
 public enum Funcs {
     ;
