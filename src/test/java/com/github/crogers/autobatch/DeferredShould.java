@@ -39,9 +39,8 @@ public class DeferredShould {
         DeferredValue<Integer> result1 = batchedFunc.apply('1');
         DeferredValue<Integer> result2 = batchedFunc.apply('2');
 
-        DeferredValue<String> bothResults = deferred.combination(result1, result2, (a, b) -> String.format("%d:%d", a, b));
-
-        assertThat(bothResults.run()).isEqualTo("1:2");
+        assertThat(result1.run()).isEqualTo(1);
+        assertThat(result2.run()).isEqualTo(2);
 
         verify(batcher).batch(ImmutableList.of('1', '2'));
         verifyNoMoreInteractions(batcher);
