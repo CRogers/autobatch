@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.function.Function;
 
-public enum Deferring {
+enum Deferring {
     ;
 
     interface Invocation2<A, B> {

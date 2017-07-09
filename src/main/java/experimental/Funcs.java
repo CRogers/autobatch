@@ -1,6 +1,6 @@
 package experimental;
 
-public enum Funcs {
+enum Funcs {
     ;
 
     interface Func0<R> {
