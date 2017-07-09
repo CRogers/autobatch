@@ -1,4 +1,7 @@
 package com.github.crogers.autobatch;
 
-public class Batcher {
+import java.util.List;
+
+public interface Batcher<I, R> {
+    List<R> batch(List<I> invocations);
 }

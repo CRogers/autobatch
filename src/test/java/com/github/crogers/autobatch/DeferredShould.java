@@ -1,8 +1,11 @@
 package com.github.crogers.autobatch;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
 
 public class DeferredShould {
     private final Deferred deferred = new Deferred();
@@ -24,5 +27,23 @@ public class DeferredShould {
         });
 
         assertThat(combination.run()).isEqualTo("hi4");
+    }
+
+    @Test
+    public void a_batched_value_should_batch_its_calls_if_called_twice() {
+        Batcher<Character, Integer> batcher = mock(Batcher.class);
+        when(batcher.batch(anyList())).thenReturn(ImmutableList.of(1, 2));
+
+        DeferredFunc1<Character, Integer> batchedFunc = deferred.batch(Character.class, Integer.class, batcher);
+
+        DeferredValue<Integer> result1 = batchedFunc.apply('1');
+        DeferredValue<Integer> result2 = batchedFunc.apply('2');
+
+        DeferredValue<String> bothResults = deferred.combination(result1, result2, (a, b) -> String.format("%d:%d", a, b));
+
+        assertThat(bothResults.run()).isEqualTo("1:2");
+
+        verify(batcher).batch(ImmutableList.of('1', '2'));
+        verifyNoMoreInteractions(batcher);
     }
 }

@@ -1,4 +1,5 @@
 package com.github.crogers.autobatch;
 
-public class DeferredFunc1 {
+public interface DeferredFunc1<A, R> {
+    DeferredValue<R> apply(A a);
 }
