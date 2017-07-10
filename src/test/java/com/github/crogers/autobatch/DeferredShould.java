@@ -3,6 +3,8 @@ package com.github.crogers.autobatch;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
@@ -44,5 +46,16 @@ public class DeferredShould {
 
         verify(batcher).batch(ImmutableList.of('1', '2'));
         verifyNoMoreInteractions(batcher);
+    }
+
+    @Test
+    public void a_value_depending_on_another() {
+        DeferredFunc1<Character, Integer> func1 = deferred.batch(Character.class, Integer.class, chars -> chars.stream().map(c -> (int) c).collect(Collectors.toList()));
+        DeferredValue<Integer> a = func1.apply('a');
+
+        DeferredFunc1<Integer, Long> func2 = deferred.batch(Integer.class, Long.class, ints -> ints.stream().map(i -> (long) i).collect(Collectors.toList()));
+        DeferredValue<Long> b = func2.apply(a);
+
+        assertThat(b.run()).isEqualTo(97);
     }
 }
