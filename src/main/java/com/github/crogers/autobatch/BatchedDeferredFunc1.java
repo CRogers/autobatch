@@ -1,23 +1,16 @@
 package com.github.crogers.autobatch;
 
-import com.google.common.base.Suppliers;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class BatchedDeferredFunc1<A, R> implements DeferredFunc1<A, R> {
-    private final List<DeferredValue<A>> invocations = new ArrayList<>();
-    private final Supplier<List<R>> savedBatch;
+    private final Batcher<A, R> batcher;
+    private final List<DeferredValue<A>> pendingInvocations = new ArrayList<>();
+    private final List<R> savedValues = new ArrayList<>();
 
     /* package */ BatchedDeferredFunc1(Batcher<A, R> batcher) {
-        this.savedBatch = Suppliers.memoize(() -> {
-            List<A> as = invocations.stream()
-                    .map(DeferredValue::run)
-                    .collect(Collectors.toList());
-            return batcher.batch(as);
-        });
+        this.batcher = batcher;
     }
 
     @Override
@@ -27,8 +20,19 @@ public class BatchedDeferredFunc1<A, R> implements DeferredFunc1<A, R> {
 
     @Override
     public DeferredValue<R> apply(DeferredValue<A> a) {
-        int savedLocation = invocations.size();
-        invocations.add(a);
-        return () -> savedBatch.get().get(savedLocation);
+        int savedLocation = savedValues.size() + pendingInvocations.size();
+        pendingInvocations.add(a);
+        return () -> {
+            if (savedLocation >= savedValues.size()) {
+                List<A> invocations = pendingInvocations.stream()
+                        .map(DeferredValue::run)
+                        .collect(Collectors.toList());
+
+                List<R> results = batcher.batch(invocations);
+                savedValues.addAll(results);
+            }
+
+            return savedValues.get(savedLocation);
+        };
     }
 }

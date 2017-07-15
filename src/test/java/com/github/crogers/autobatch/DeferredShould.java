@@ -50,12 +50,35 @@ public class DeferredShould {
 
     @Test
     public void a_value_depending_on_another() {
-        DeferredFunc1<Character, Integer> func1 = deferred.batch(Character.class, Integer.class, chars -> chars.stream().map(c -> (int) c).collect(Collectors.toList()));
+        DeferredFunc1<Character, Integer> func1 = deferred.batch(Character.class, Integer.class, chars ->
+                chars.stream().map(c -> (int) c).collect(Collectors.toList()));
+
         DeferredValue<Integer> a = func1.apply('a');
 
-        DeferredFunc1<Integer, Long> func2 = deferred.batch(Integer.class, Long.class, ints -> ints.stream().map(i -> (long) i).collect(Collectors.toList()));
+        DeferredFunc1<Integer, Long> func2 = deferred.batch(Integer.class, Long.class, ints ->
+                ints.stream().map(i -> (long) i).collect(Collectors.toList()));
+
         DeferredValue<Long> b = func2.apply(a);
 
         assertThat(b.run()).isEqualTo(97);
+    }
+
+    @Test
+    public void work_when_calling_run_multiple_times_with_different_args() {
+        DeferredFunc1<Boolean, Boolean> func = deferred.batch(Boolean.class, Boolean.class, bools ->
+            bools.stream().map(b -> !b).collect(Collectors.toList())
+        );
+
+        DeferredValue<Boolean> first = func.apply(true);
+        first.run();
+
+        DeferredValue<Boolean> second = func.apply(false);
+        assertThat(second.run()).isTrue();
+    }
+
+    private <T, R> Batcher<T, R> batcherFor(Batcher<T, R> batcher) {
+        Batcher<T, R> mockedBatcher = mock(Batcher.class);
+        when(mockedBatcher.batch(anyList())).then(invocation -> batcher.batch(invocation.getArgument(0)));
+        return mockedBatcher;
     }
 }
