@@ -32,20 +32,19 @@ public enum Deferred {
         return () -> combiner.apply(deferredValues.map(DeferredValue::run));
     }
 
-    public static <A, R> DeferredFunc1<A, R> batch(Class<A> aClass, Class<R> rClass, Batcher<A, R> batcher) {
+    public static <R> DeferredFunc0<R> batchNoArgs(ArglessBatcher<R> arglessBatcher) {
+        return new BatchedDeferredFunc0<>(arglessBatcher);
+    }
+
+    public static <A, R> DeferredFunc1<A, R> batch1Arg(Batcher<A, R> batcher) {
         return new BatchedDeferredFunc1<>(batcher);
     }
 
-    public static <A, B, R> DeferredFunc2<A, B, R> batch(Class<A> aClass, Class<B> bClass, Class<R> rClass, Batcher<Invocation2<A, B>, R> batcher) {
+    public static <A, B, R> DeferredFunc2<A, B, R> batch2Args(Batcher<Invocation2<A, B>, R> batcher) {
         return new BatchedDeferredFunc2<>(batcher);
     }
 
-    public static <A, B, C, R> DeferredFunc3<A, B, C, R> batch(
-            Class<A> aClass,
-            Class<B> bClass,
-            Class<C> cClass,
-            Class<R> rClass,
-            Batcher<Invocation3<A, B, C>, R> batcher) {
+    public static <A, B, C, R> DeferredFunc3<A, B, C, R> batch3Args(Batcher<Invocation3<A, B, C>, R> batcher) {
         return new BatchedDeferredFunc3<>(batcher);
     }
 }

@@ -81,7 +81,7 @@ public class DeferredShould {
         Batcher<Character, Integer> batcher = mock(Batcher.class);
         when(batcher.batch(anyList())).thenReturn(ImmutableList.of(1, 2));
 
-        DeferredFunc1<Character, Integer> batchedFunc = Deferred.batch(Character.class, Integer.class, batcher);
+        DeferredFunc1<Character, Integer> batchedFunc = Deferred.batch1Arg(batcher);
 
         DeferredValue<Integer> result1 = batchedFunc.apply('1');
         DeferredValue<Integer> result2 = batchedFunc.apply('2');
@@ -95,12 +95,12 @@ public class DeferredShould {
 
     @Test
     public void a_value_depending_on_another() {
-        DeferredFunc1<Character, Integer> func1 = Deferred.batch(Character.class, Integer.class, chars ->
+        DeferredFunc1<Character, Integer> func1 = Deferred.batch1Arg(chars ->
                 chars.stream().map(c -> (int) c).collect(Collectors.toList()));
 
         DeferredValue<Integer> a = func1.apply('a');
 
-        DeferredFunc1<Integer, Long> func2 = Deferred.batch(Integer.class, Long.class, ints ->
+        DeferredFunc1<Integer, Long> func2 = Deferred.batch1Arg(ints ->
                 ints.stream().map(i -> (long) i).collect(Collectors.toList()));
 
         DeferredValue<Long> b = func2.apply(a);
@@ -110,7 +110,7 @@ public class DeferredShould {
 
     @Test
     public void work_when_calling_run_multiple_times_with_different_args() {
-        DeferredFunc1<Boolean, Boolean> func = Deferred.batch(Boolean.class, Boolean.class, bools ->
+        DeferredFunc1<Boolean, Boolean> func = Deferred.batch1Arg(bools ->
             bools.stream().map(b -> !b).collect(Collectors.toList())
         );
 
