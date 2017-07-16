@@ -1,7 +1,5 @@
 package com.github.crogers.autobatch;
 
-import one.util.streamex.StreamEx;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,11 +18,12 @@ public class BatchedFunc<T, R> {
                 .collect(Collectors.toList());
 
         List<R> results = batcher.batch(inputs);
-        StreamEx.of(results)
-                .zipWith(pendingInvocations.stream())
-                .forKeyValue((result, deferredInvocation) -> {
-                    deferredInvocation.setValue(result);
-                });
+
+        for (int i = 0; i < pendingInvocations.size(); i++) {
+            DeferredMemoisedInvocation<T, R> deferredMemoisedInvocation = pendingInvocations.get(i);
+            R result = results.get(i);
+            deferredMemoisedInvocation.setValue(result);
+        }
 
         pendingInvocations.clear();
     }
