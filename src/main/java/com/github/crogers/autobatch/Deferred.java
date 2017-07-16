@@ -28,4 +28,8 @@ public enum Deferred {
     public static <A, R> DeferredFunc1<A, R> batch(Class<A> aClass, Class<R> rClass, Batcher<A, R> batcher) {
         return new BatchedDeferredFunc1<>(batcher);
     }
+
+    public static <A, B, R> DeferredFunc1<A, B, R> batch(Class<A> aClass, Class<B> bClass, Class<R> rClass, Batcher<A, R> batcher) {
+        return new BatchedDeferredFunc1<>(batcher);
+    }
 }
