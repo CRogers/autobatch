@@ -11,9 +11,9 @@ Pretend we have a resource: posts. We want to do two operations to it:
 either delete a single post or delete a whole bunch of posts.
 Traditionally, we would have two options:
 
-0. Use the same code for deleting individual posts but just call it
+1. Use the same code for deleting individual posts but just call it
    many times for the bulk delete.
-0. Write two pieces of code, one to handle single deletions, one to
+1. Write two pieces of code, one to handle single deletions, one to
    handle bulk deletions.
    
 Neither of these are ideal, as 1) will result in a large number of
