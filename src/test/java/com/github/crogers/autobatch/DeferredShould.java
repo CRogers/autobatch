@@ -1,8 +1,12 @@
 package com.github.crogers.autobatch;
 
 import com.google.common.collect.ImmutableList;
+import one.util.streamex.StreamEx;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -31,15 +35,45 @@ public class DeferredShould {
     }
 
     @Test
-    public void combining_two_deferred_values_should_retun_the_combination() {
-        DeferredValue<String> hi = Deferred.value("hi");
-        DeferredValue<Integer> four = Deferred.value(4);
+    public void combining_two_deferred_values_should_return_the_combination_and_only_compute_it_when_run() {
+        DeferredValue<String> hi = deferredValueMock("hi");
+        DeferredValue<Integer> four = deferredValueMock(4);
 
-        DeferredValue<String> combination = Deferred.combination(hi, four, (hi_, four_) -> {
-            return hi_ + String.valueOf(four_);
+        BiFunction<String, Integer, String> combiner = mock(BiFunction.class);
+        when(combiner.apply(anyString(), anyInt())).thenAnswer(invocation -> {
+            String string = invocation.getArgument(0);
+            int integer = invocation.getArgument(1);
+            return string + String.valueOf(integer);
         });
 
+        DeferredValue<String> combination = Deferred.combination(hi, four, combiner);
+        verifyZeroInteractions(combiner, hi, four);
+
         assertThat(combination.run()).isEqualTo("hi4");
+    }
+
+    private <T> DeferredValue<T> deferredValueMock(T value) {
+        DeferredValue<T> deferredValue = mock(DeferredValue.class);
+        when(deferredValue.run()).thenReturn(value);
+        return deferredValue;
+    }
+
+    @Test
+    public void combination_of_all_should_combine_multiple_values_and_only_compute_when_run() {
+        Function<Iterable<Integer>, Integer> combiner = mock(Function.class);
+        when(combiner.apply(any())).thenAnswer(invocation -> {
+            Iterable<Integer> ints = invocation.getArgument(0);
+            return StreamEx.of(ints.iterator()).mapToInt(i -> i).sum();
+        });
+
+        List<DeferredValue<Integer>> values = ImmutableList.of(
+                deferredValueMock(1), deferredValueMock(2), deferredValueMock(3));
+
+        DeferredValue<Integer> sum = Deferred.combinationOfAll(values, combiner);
+        verifyZeroInteractions(combiner);
+        verifyZeroInteractions(values.toArray());
+
+        assertThat(sum.run()).isEqualTo(6);
     }
 
     @Test
