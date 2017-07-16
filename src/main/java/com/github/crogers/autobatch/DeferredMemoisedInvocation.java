@@ -2,12 +2,12 @@ package com.github.crogers.autobatch;
 
 import java.util.Objects;
 
-public class DeferredMemoisedInvocation<A, R> implements Deferred<R> {
+class DeferredMemoisedInvocation<A, R> implements Deferred<R> {
     private final Deferred<A> deferredValue;
     private final Runnable invoker;
     private R value;
 
-    public DeferredMemoisedInvocation(Deferred<A> deferredValue, Runnable invoker) {
+    DeferredMemoisedInvocation(Deferred<A> deferredValue, Runnable invoker) {
         this.deferredValue = deferredValue;
         this.invoker = invoker;
     }

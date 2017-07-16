@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BatchedFunc<T, R> {
+class BatchedFunc<T, R> {
     private final Batcher<T, R> batcher;
     private final List<DeferredMemoisedInvocation<T, R>> pendingInvocations = new ArrayList<>();
 
-    /* package */ BatchedFunc(Batcher<T, R> batcher) {
+    BatchedFunc(Batcher<T, R> batcher) {
         this.batcher = batcher;
     }
 
