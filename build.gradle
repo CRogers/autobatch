@@ -17,6 +17,7 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '22.0'
     compile 'one.util:streamex:0.6.5'
     compile group: 'org.jdbi', name: 'jdbi', version: '2.78'
+    compile group: 'org.jooq', name: 'jool', version: '0.9.12'
 
     processor 'org.immutables:value:2.5.3'
 
