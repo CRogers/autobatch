@@ -72,7 +72,7 @@ public class DeferredShould {
         List<Deferred<Integer>> values = ImmutableList.of(
                 deferredValueMock(1), deferredValueMock(2), deferredValueMock(3));
 
-        Deferred<Integer> sum = Deferred.combinationOfAll(values.stream(), combiner);
+        Deferred<Integer> sum = Deferred.combineAll(values.stream(), combiner);
         verifyZeroInteractions(combiner);
         verifyZeroInteractions(values.toArray());
 

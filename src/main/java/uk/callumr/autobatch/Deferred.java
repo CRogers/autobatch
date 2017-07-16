@@ -28,7 +28,7 @@ public interface Deferred<T> {
         return () -> combiner.apply(a.run(), b.run(), c.run());
     }
 
-    static <T, R> Deferred<R> combinationOfAll(Stream<Deferred<T>> deferredValues, Function<Stream<T>, R> combiner) {
+    static <T, R> Deferred<R> combineAll(Stream<Deferred<T>> deferredValues, Function<Stream<T>, R> combiner) {
         return () -> combiner.apply(deferredValues.map(Deferred::run));
     }
 

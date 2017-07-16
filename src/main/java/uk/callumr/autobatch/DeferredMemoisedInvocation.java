@@ -1,11 +1,10 @@
 package uk.callumr.autobatch;
 
-import java.util.Objects;
-
 class DeferredMemoisedInvocation<A, R> implements Deferred<R> {
     private final Deferred<A> deferredValue;
     private final Runnable invoker;
     private R value;
+    private boolean valueHasBeenSet = false;
 
     DeferredMemoisedInvocation(Deferred<A> deferredValue, Runnable invoker) {
         this.deferredValue = deferredValue;
@@ -14,10 +13,10 @@ class DeferredMemoisedInvocation<A, R> implements Deferred<R> {
 
     @Override
     public R run() {
-        if (value == null) {
+        if (!valueHasBeenSet) {
             invoker.run();
         }
-        return Objects.requireNonNull(value);
+        return value;
     }
 
     public A input() {
@@ -26,5 +25,6 @@ class DeferredMemoisedInvocation<A, R> implements Deferred<R> {
 
     public void setValue(R value) {
         this.value = value;
+        this.valueHasBeenSet = true;
     }
 }
