@@ -1,5 +1,7 @@
 package com.github.crogers.autobatch;
 
+import java.util.Objects;
+
 public class DeferredMemoisedInvocation<A, R> implements DeferredValue<R> {
     private final DeferredValue<A> deferredValue;
     private final Runnable invoker;
@@ -15,7 +17,7 @@ public class DeferredMemoisedInvocation<A, R> implements DeferredValue<R> {
         if (value == null) {
             invoker.run();
         }
-        return value;
+        return Objects.requireNonNull(value);
     }
 
     public A input() {
