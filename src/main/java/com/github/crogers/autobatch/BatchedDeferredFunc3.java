@@ -8,7 +8,7 @@ public class BatchedDeferredFunc3<A, B, C, R> implements DeferredFunc3<A, B, C, 
     }
 
     @Override
-    public DeferredValue<R> apply(DeferredValue<A> a, DeferredValue<B> b, DeferredValue<C> c) {
+    public Deferred<R> apply(Deferred<A> a, Deferred<B> b, Deferred<C> c) {
         return batchedFunc.addPending(Invocation3.of(a, b, c));
     }
 }

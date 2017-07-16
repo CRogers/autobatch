@@ -1,6 +1,6 @@
 package com.github.crogers.autobatch;
 
-public class SimpleDeferredValue<T> implements DeferredValue<T> {
+public class SimpleDeferredValue<T> implements Deferred<T> {
     private final T value;
 
     /* package */ SimpleDeferredValue(T value) {

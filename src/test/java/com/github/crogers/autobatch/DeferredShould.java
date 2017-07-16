@@ -18,7 +18,7 @@ public class DeferredShould {
 
     @Test
     public void deferring_a_value_then_running_it_should_return_the_value() {
-        DeferredValue<Integer> deferredValue = Deferred.value(10);
+        Deferred<Integer> deferredValue = Deferred.value(10);
 
         assertThat(deferredValue.run()).isEqualTo(10);
     }
@@ -28,7 +28,7 @@ public class DeferredShould {
         Supplier<Integer> supplier = mock(Supplier.class);
         when(supplier.get()).thenReturn(4);
 
-        DeferredValue<Integer> deferredValue = Deferred.value(supplier);
+        Deferred<Integer> deferredValue = Deferred.value(supplier);
         verifyZeroInteractions(supplier);
 
         assertThat(deferredValue.run()).isEqualTo(4);
@@ -36,8 +36,8 @@ public class DeferredShould {
 
     @Test
     public void combining_two_deferred_values_should_return_the_combination_and_only_compute_it_when_run() {
-        DeferredValue<String> hi = deferredValueMock("hi");
-        DeferredValue<Integer> four = deferredValueMock(4);
+        Deferred<String> hi = deferredValueMock("hi");
+        Deferred<Integer> four = deferredValueMock(4);
 
         BiFunction<String, Integer, String> combiner = mock(BiFunction.class);
         when(combiner.apply(anyString(), anyInt())).thenAnswer(invocation -> {
@@ -46,14 +46,14 @@ public class DeferredShould {
             return string + String.valueOf(integer);
         });
 
-        DeferredValue<String> combination = Deferred.combination(hi, four, combiner);
+        Deferred<String> combination = Deferred.combination(hi, four, combiner);
         verifyZeroInteractions(combiner, hi, four);
 
         assertThat(combination.run()).isEqualTo("hi4");
     }
 
-    private <T> DeferredValue<T> deferredValueMock(T value) {
-        DeferredValue<T> deferredValue = mock(DeferredValue.class);
+    private <T> Deferred<T> deferredValueMock(T value) {
+        Deferred<T> deferredValue = mock(Deferred.class);
         when(deferredValue.run()).thenReturn(value);
         return deferredValue;
     }
@@ -66,10 +66,10 @@ public class DeferredShould {
             return ints.mapToInt(i -> i).sum();
         });
 
-        List<DeferredValue<Integer>> values = ImmutableList.of(
+        List<Deferred<Integer>> values = ImmutableList.of(
                 deferredValueMock(1), deferredValueMock(2), deferredValueMock(3));
 
-        DeferredValue<Integer> sum = Deferred.combinationOfAll(values.stream(), combiner);
+        Deferred<Integer> sum = Deferred.combinationOfAll(values.stream(), combiner);
         verifyZeroInteractions(combiner);
         verifyZeroInteractions(values.toArray());
 
@@ -83,8 +83,8 @@ public class DeferredShould {
 
         DeferredFunc1<Character, Integer> batchedFunc = Deferred.batch1Arg(batcher);
 
-        DeferredValue<Integer> result1 = batchedFunc.apply('1');
-        DeferredValue<Integer> result2 = batchedFunc.apply('2');
+        Deferred<Integer> result1 = batchedFunc.apply('1');
+        Deferred<Integer> result2 = batchedFunc.apply('2');
 
         assertThat(result1.run()).isEqualTo(1);
         assertThat(result2.run()).isEqualTo(2);
@@ -98,12 +98,12 @@ public class DeferredShould {
         DeferredFunc1<Character, Integer> func1 = Deferred.batch1Arg(chars ->
                 chars.stream().map(c -> (int) c).collect(Collectors.toList()));
 
-        DeferredValue<Integer> a = func1.apply('a');
+        Deferred<Integer> a = func1.apply('a');
 
         DeferredFunc1<Integer, Long> func2 = Deferred.batch1Arg(ints ->
                 ints.stream().map(i -> (long) i).collect(Collectors.toList()));
 
-        DeferredValue<Long> b = func2.apply(a);
+        Deferred<Long> b = func2.apply(a);
 
         assertThat(b.run()).isEqualTo(97);
     }
@@ -114,10 +114,10 @@ public class DeferredShould {
             bools.stream().map(b -> !b).collect(Collectors.toList())
         );
 
-        DeferredValue<Boolean> first = func.apply(true);
+        Deferred<Boolean> first = func.apply(true);
         first.run();
 
-        DeferredValue<Boolean> second = func.apply(false);
+        Deferred<Boolean> second = func.apply(false);
         assertThat(second.run()).isTrue();
     }
 

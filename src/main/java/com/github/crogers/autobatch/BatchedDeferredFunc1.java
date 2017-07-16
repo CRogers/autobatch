@@ -8,7 +8,7 @@ public class BatchedDeferredFunc1<A, R> implements DeferredFunc1<A, R> {
     }
 
     @Override
-    public DeferredValue<R> apply(DeferredValue<A> a) {
+    public Deferred<R> apply(Deferred<A> a) {
         return batchedFunc.addPending(a);
     }
 }

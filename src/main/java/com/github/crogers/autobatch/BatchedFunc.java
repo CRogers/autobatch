@@ -28,7 +28,7 @@ public class BatchedFunc<T, R> {
         pendingInvocations.clear();
     }
 
-    public DeferredValue<R> addPending(DeferredValue<T> pendingInvocation) {
+    public Deferred<R> addPending(Deferred<T> pendingInvocation) {
         DeferredMemoisedInvocation<T, R> deferredMemoisedInvocation =
                 new DeferredMemoisedInvocation<>(pendingInvocation, this::batchIt);
         

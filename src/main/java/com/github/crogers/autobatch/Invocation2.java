@@ -7,7 +7,7 @@ public interface Invocation2<A, B> {
     A first();
     B second();
 
-    static <A, B> DeferredValue<Invocation2<A, B>> of(DeferredValue<A> first, DeferredValue<B> second) {
+    static <A, B> Deferred<Invocation2<A, B>> of(Deferred<A> first, Deferred<B> second) {
         return Deferred.combination(first, second, Invocation2::of);
     }
 

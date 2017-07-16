@@ -8,10 +8,10 @@ public interface Invocation3<A, B, C> {
     B second();
     C third();
 
-    static <A, B, C> DeferredValue<Invocation3<A, B, C>> of(
-            DeferredValue<A> first,
-            DeferredValue<B> second,
-            DeferredValue<C> third) {
+    static <A, B, C> Deferred<Invocation3<A, B, C>> of(
+            Deferred<A> first,
+            Deferred<B> second,
+            Deferred<C> third) {
 
         return Deferred.combination(first, second, third, Invocation3::of);
     }
