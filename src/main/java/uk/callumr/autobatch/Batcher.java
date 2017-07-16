@@ -1,4 +1,4 @@
-package com.github.crogers.autobatch;
+package uk.callumr.autobatch;
 
 import java.util.List;
 

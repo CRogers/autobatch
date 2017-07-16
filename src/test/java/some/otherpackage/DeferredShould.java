@@ -1,7 +1,10 @@
-package com.github.crogers.autobatch;
+package some.otherpackage;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
+import uk.callumr.autobatch.Batcher;
+import uk.callumr.autobatch.Deferred;
+import uk.callumr.autobatch.DeferredFunc1;
 
 import java.util.List;
 import java.util.function.BiFunction;

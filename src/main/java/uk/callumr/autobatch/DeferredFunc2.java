@@ -1,4 +1,4 @@
-package com.github.crogers.autobatch;
+package uk.callumr.autobatch;
 
 public interface DeferredFunc2<A, B, R> {
     default Deferred<R> apply(A a, B b) {

@@ -1,4 +1,4 @@
-package com.github.crogers.autobatch;
+package uk.callumr.autobatch;
 
 class BatchedDeferredFunc3<A, B, C, R> implements DeferredFunc3<A, B, C, R> {
     private final BatchedFunc<Invocation3<A, B, C>, R> batchedFunc;

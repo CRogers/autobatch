@@ -1,4 +1,4 @@
-package com.github.crogers.autobatch;
+package uk.callumr.autobatch;
 
 class SimpleDeferredValue<T> implements Deferred<T> {
     private final T value;
