@@ -17,9 +17,9 @@ Traditionally, we would have two options:
    handle bulk deletions.
    
 Neither of these are ideal, as 1) will result in a large number of
-we requests, degrading performance and 2) needlessly duplicates code.
+web requests, degrading performance and 2) needlessly duplicates code.
 
-With Autobatch, we can have our cake an eat it, using the same code
+With Autobatch, we can have our cake and eat it, using the same code
 for both use cases and getting maximal performance. The code below
 shows what this looks like:
 
@@ -60,3 +60,9 @@ public void bulkDelete() {
 
 In this case `bulkDelete` will only run one batched delete call even
 though it has just called `deletePost` multiple times!
+
+##### TODO: Better example showing multiple layers of batching
+
+Heavily inspired by Haxl from Facebook - `Deferred` is really just an
+Applicative Functor that allows us to see the operations that are going
+to be performed before they actually happen.
