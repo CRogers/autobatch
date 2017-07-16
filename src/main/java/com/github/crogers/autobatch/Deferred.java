@@ -1,10 +1,9 @@
 package com.github.crogers.autobatch;
 
-import com.google.common.collect.Iterables;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public enum Deferred {
     ;
@@ -21,8 +20,8 @@ public enum Deferred {
         return () -> combiner.apply(a.run(), b.run());
     }
 
-    public static <T, R> DeferredValue<R> combinationOfAll(Iterable<DeferredValue<T>> deferredValues, Function<Iterable<T>, R> combiner) {
-        return () -> combiner.apply(Iterables.transform(deferredValues, DeferredValue::run));
+    public static <T, R> DeferredValue<R> combinationOfAll(Stream<DeferredValue<T>> deferredValues, Function<Stream<T>, R> combiner) {
+        return () -> combiner.apply(deferredValues.map(DeferredValue::run));
     }
 
     public static <A, R> DeferredFunc1<A, R> batch(Class<A> aClass, Class<R> rClass, Batcher<A, R> batcher) {

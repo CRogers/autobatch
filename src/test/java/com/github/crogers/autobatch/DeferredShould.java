@@ -1,7 +1,6 @@
 package com.github.crogers.autobatch;
 
 import com.google.common.collect.ImmutableList;
-import one.util.streamex.StreamEx;
 import org.junit.Test;
 
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -60,16 +60,16 @@ public class DeferredShould {
 
     @Test
     public void combination_of_all_should_combine_multiple_values_and_only_compute_when_run() {
-        Function<Iterable<Integer>, Integer> combiner = mock(Function.class);
+        Function<Stream<Integer>, Integer> combiner = mock(Function.class);
         when(combiner.apply(any())).thenAnswer(invocation -> {
-            Iterable<Integer> ints = invocation.getArgument(0);
-            return StreamEx.of(ints.iterator()).mapToInt(i -> i).sum();
+            Stream<Integer> ints = invocation.getArgument(0);
+            return ints.mapToInt(i -> i).sum();
         });
 
         List<DeferredValue<Integer>> values = ImmutableList.of(
                 deferredValueMock(1), deferredValueMock(2), deferredValueMock(3));
 
-        DeferredValue<Integer> sum = Deferred.combinationOfAll(values, combiner);
+        DeferredValue<Integer> sum = Deferred.combinationOfAll(values.stream(), combiner);
         verifyZeroInteractions(combiner);
         verifyZeroInteractions(values.toArray());
 

@@ -1,5 +1,8 @@
 package com.github.crogers.autobatch;
 
+import org.immutables.value.Value;
+
+@Value.Immutable
 public interface Invocation2<A, B> {
     A first();
     B second();

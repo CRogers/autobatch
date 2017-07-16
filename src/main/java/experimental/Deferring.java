@@ -2,8 +2,8 @@ package experimental;
 
 import experimental.Funcs.Func0;
 import experimental.Funcs.Func2;
-import com.google.common.collect.ImmutableList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -69,7 +69,7 @@ enum Deferring {
 
         public DeferredPermissions(Deferred deferred, Permissions permissions) {
             this.hasPermission = deferred.batch(Long.class, String.class, Boolean.class, (invocations) -> {
-                return ImmutableList.of();
+                return Collections.emptyList();
             });
             this.pingPong = deferred.callThroughTo(permissions::pingPong);
         }
