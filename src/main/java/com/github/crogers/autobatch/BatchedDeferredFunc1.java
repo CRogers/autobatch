@@ -30,11 +30,6 @@ public class BatchedDeferredFunc1<A, R> implements DeferredFunc1<A, R> {
     }
 
     @Override
-    public DeferredValue<R> apply(A a) {
-        return apply(new SimpleDeferredValue<>(a));
-    }
-
-    @Override
     public DeferredValue<R> apply(DeferredValue<A> a) {
         DeferredMemoisedInvocation<A, R> deferredMemoisedInvocation = new DeferredMemoisedInvocation<>(a, this::batchIt);
         pendingInvocations.add(deferredMemoisedInvocation);
